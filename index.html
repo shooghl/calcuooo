@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A modern, secure, and fully functional calculator app with a sleek dark theme.">
+    <title>Modern Calculator</title>
+    <style>
+        /* General Styles */
+        body {
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+        }
+
+        /* Calculator Container */
+        .calculator {
+            background: #262626;
+            border-radius: 20px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 320px;
+            text-align: center;
+        }
+
+        /* Display Screen */
+        #display {
+            width: 100%;
+            height: 80px;
+            border: none;
+            border-radius: 15px;
+            background: #1a1a1a;
+            font-size: 32px;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Buttons Grid */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        /* Button Styles */
+        .button {
+            background: #333333;
+            color: #ffd700;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .button.operation {
+            background: #ff4500;
+            color: white;
+        }
+
+        .button.equals {
+            background: #0077ff;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .button.clear {
+            background: #ff4500;
+            color: white;
+        }
+
+        /* Footer with Privacy Policy Link */
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #0077ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Calculator Container -->
+    <div class="calculator">
+        <!-- Display Screen -->
+        <input type="text" id="display" readonly aria-label="Calculator Display">
+
+        <!-- Buttons Grid -->
+        <div class="buttons">
+            <!-- Row 1 -->
+            <button class="button clear" onclick="clearDisplay()" aria-label="Clear">C</button>
+            <button class="button clear" onclick="deleteLast()" aria-label="Delete Last Character">DEL</button>
+            <button class="button operation" onclick="appendToDisplay('%')" aria-label="Percentage">%</button>
+            <button class="button operation" onclick="appendToDisplay('/')" aria-label="Divide">/</button>
+
+            <!-- Row 2 -->
+            <button class="button" onclick="appendToDisplay('7')" aria-label="7">7</button>
+            <button class="button" onclick="appendToDisplay('8')" aria-label="8">8</button>
+            <button class="button" onclick="appendToDisplay('9')" aria-label="9">9</button>
+            <button class="button operation" onclick="appendToDisplay('*')" aria-label="Multiply">*</button>
+
+            <!-- Row 3 -->
+            <button class="button" onclick="appendToDisplay('4')" aria-label="4">4</button>
+            <button class="button" onclick="appendToDisplay('5')" aria-label="5">5</button>
+            <button class="button" onclick="appendToDisplay('6')" aria-label="6">6</button>
+            <button class="button operation" onclick="appendToDisplay('-')" aria-label="Subtract">-</button>
+
+            <!-- Row 4 -->
+            <button class="button" onclick="appendToDisplay('1')" aria-label="1">1</button>
+            <button class="button" onclick="appendToDisplay('2')" aria-label="2">2</button>
+            <button class="button" onclick="appendToDisplay('3')" aria-label="3">3</button>
+            <button class="button operation" onclick="appendToDisplay('+')" aria-label="Add">+</button>
+
+            <!-- Row 5 -->
+            <button class="button" onclick="appendToDisplay('0')" aria-label="0">0</button>
+            <button class="button" onclick="appendToDisplay('.')" aria-label="Decimal Point">.</button>
+            <button class="button equals" onclick="calculateResult()" aria-label="Equals">=</button>
+        </div>
+
+        <!-- Footer with Privacy Policy Link -->
+        <footer>
+            <a href="https://www.yourwebsite.com/privacy-policy" target="_blank" aria-label="Privacy Policy">Privacy Policy</a>
+        </footer>
+    </div>
+
+    <script>
+        // Function to append value to the display
+        function appendToDisplay(value) {
+            const display = document.getElementById('display');
+            display.value += value;
+        }
+
+        // Function to clear the display
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        // Function to delete the last character
+        function deleteLast() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
+        }
+
+        // Function to calculate the result (safer alternative to eval)
+        function calculateResult() {
+            const display = document.getElementById('display');
+            try {
+                // Use Function constructor to avoid eval
+                display.value = new Function('return ' + display.value)();
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
