@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A modern, secure, and fully functional calculator app with a sleek dark theme.">
+    <title>Modern Calculator with Ads</title>
+    <style>
+        /* General Styles */
+        body {
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+        }
+
+        /* Calculator Container */
+        .calculator {
+            background: #262626;
+            border-radius: 20px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 320px;
+            text-align: center;
+        }
+
+        /* Display Screen */
+        #display {
+            width: 100%;
+            height: 80px;
+            border: none;
+            border-radius: 15px;
+            background: #1a1a1a;
+            font-size: 32px;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Buttons Grid */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        /* Button Styles */
+        .button {
+            background: #333333;
+            color: #ffd700;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .button.operation {
+            background: #ff4500;
+            color: white;
+        }
+
+        .button.equals {
+            background: #0077ff;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .button.clear {
+            background: #ff4500;
+            color: white;
+        }
+
+        /* Footer with Privacy Policy Link */
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #0077ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Ad Container */
+        .ad-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Ad-Free Message */
+        .ad-free-message {
+            color: #00ff00;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* Consent Message */
+        #consent-message {
+            display: none;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        /* Skip Ad Button */
+        #skip-ad {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Calculator Container -->
+    <div class="calculator">
+        <!-- Display Screen -->
+        <input type="text" id="display" readonly aria-label="Calculator Display">
+
+        <!-- Buttons Grid -->
+        <div class="buttons">
+            <!-- Row 1 -->
+            <button class="button clear" onclick="clearDisplay()" aria-label="Clear">C</button>
+            <button class="button clear" onclick="deleteLast()" aria-label="Delete Last Character">DEL</button>
+            <button class="button operation" onclick="appendToDisplay('%')" aria-label="Percentage">%</button>
+            <button class="button operation" onclick="appendToDisplay('/')" aria-label="Divide">/</button>
+
+            <!-- Row 2 -->
+            <button class="button" onclick="appendToDisplay('7')" aria-label="7">7</button>
+            <button class="button" onclick="appendToDisplay('8')" aria-label="8">8</button>
+            <button class="button" onclick="appendToDisplay('9')" aria-label="9">9</button>
+            <button class="button operation" onclick="appendToDisplay('*')" aria-label="Multiply">*</button>
+
+            <!-- Row 3 -->
+            <button class="button" onclick="appendToDisplay('4')" aria-label="4">4</button>
+            <button class="button" onclick="appendToDisplay('5')" aria-label="5">5</button>
+            <button class="button" onclick="appendToDisplay('6')" aria-label="6">6</button>
+            <button class="button operation" onclick="appendToDisplay('-')" aria-label="Subtract">-</button>
+
+            <!-- Row 4 -->
+            <button class="button" onclick="appendToDisplay('1')" aria-label="1">1</button>
+            <button class="button" onclick="appendToDisplay('2')" aria-label="2">2</button>
+            <button class="button" onclick="appendToDisplay('3')" aria-label="3">3</button>
+            <button class="button operation" onclick="appendToDisplay('+')" aria-label="Add">+</button>
+
+            <!-- Row 5 -->
+            <button class="button" onclick="appendToDisplay('0')" aria-label="0">0</button>
+            <button class="button" onclick="appendToDisplay('.')" aria-label="Decimal Point">.</button>
+            <button class="button equals" onclick="calculateResult()" aria-label="Equals">=</button>
+        </div>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <!-- Banner Ad -->
+            <div id="div-gpt-ad-banner" style="width: 320px; height: 100px;">
+                <script>
+                    googletag.cmd.push(function() {
+                        googletag.display('div-gpt-ad-banner');
+                    });
+                </script>
+            </div>
+
+            <!-- Rewarded Ad (Will show after 2 minutes) -->
+            <div id="div-gpt-ad-rewarded" style="display: none;">
+                <script>
+                    googletag.cmd.push(function() {
+                        googletag.display('div-gpt-ad-rewarded');
+                    });
+                </script>
+            </div>
+
+            <!-- Ad-Free Message -->
+            <div id="ad-free-timer" class="ad-free-message" style="display: none;">
+                Ad-Free for <span id="timer">2:00</span> minutes!
+            </div>
+
+            <!-- Skip Ad Button -->
+            <div id="skip-ad" style="display: none;">
+                <button onclick="skipAd()">Skip Ad</button>
+            </div>
+
+            <!-- Consent Message -->
+            <div id="consent-message">
+                <p>We use cookies to personalize ads. Do you consent?</p>
+                <button onclick="acceptConsent()">Yes</button>
+                <button onclick="declineConsent()">No</button>
+            </div>
+        </div>
+
+        <!-- Footer with Privacy Policy and Terms Links -->
+        <footer>
+            <a href="https://github.com/shooghl/privacy-policy.git" target="_blank" aria-label="Privacy Policy">Privacy Policy</a> | 
+            <a href="https://github.com/shooghl/terms-of-service.git" target="_blank" aria-label="Terms of Service">Terms of Service</a>
+        </footer>
+    </div>
+
+    <!-- Google Publisher Tags (GPT) Script -->
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script>
+        // Initialize GPT
+        window.googletag = window.googletag || {cmd: []};
+        googletag.cmd.push(function() {
+            // Define ad slots
+            googletag.defineSlot('/7323468455199784/1881389463', [[320, 100]], 'div-gpt-ad-banner').addService(googletag.pubads()); // Banner Ad
+            googletag.defineSlot('/7323468455199784/6482979454', [[300, 250]], 'div-gpt-ad-rewarded').addService(googletag.pubads()); // Rewarded Ad
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+
+        // Rewarded Ad Logic (Show after 2 minutes)
+        let adFreeActive = false;
+        setTimeout(() => {
+            if (!adFreeActive) {
+                document.getElementById('div-gpt-ad-rewarded').style.display = 'block';
+                document.getElementById('skip-ad').style.display = 'block';
+            }
+        }, 120000); // 2 minutes = 120,000 milliseconds
+
+        // Function to activate ad-free mode
+        function activateAdFree() {
+            adFreeActive = true;
+            document.getElementById('div-gpt-ad-banner').style.display = 'none';
+            document.getElementById('div-gpt-ad-rewarded').style.display = 'none';
+            document.getElementById('skip-ad').style.display = 'none';
+            document.getElementById('ad-free-timer').style.display = 'block';
+
+            let timeLeft = 120; // 2 minutes in seconds
+            const timerElement = document.getElementById('timer');
+
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    adFreeActive = false;
+                    document.getElementById('div-gpt-ad-banner').style.display = 'block';
+                    document.getElementById('ad-free-timer').style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        // Function to skip the ad
+        function skipAd() {
+            document.getElementById('div-gpt-ad-rewarded').style.display = 'none';
+            document.getElementById('skip-ad').style.display = 'none';
+        }
+
+        // Consent Logic
+        function acceptConsent() {
+            localStorage.setItem('consent', 'accepted');
+            document.getElementById('consent-message').style.display = 'none';
+            initializeAds();
+        }
+
+        function declineConsent() {
+            localStorage.setItem('consent', 'declined');
+            document.getElementById('consent-message').style.display = 'none';
+            // Disable personalized ads
+            googletag.pubads().setRequestNonPersonalizedAds(1);
+            initializeAds();
+        }
+
+        function initializeAds() {
+            googletag.cmd.push(function() {
+                googletag.defineSlot('/7323468455199784/1881389463', [[320, 100]], 'div-gpt-ad-banner').addService(googletag.pubads());
+                googletag.defineSlot('/7323468455199784/6482979454', [[300, 250]], 'div-gpt-ad-rewarded').addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+            });
+        }
+
+        // Check consent on page load
+        window.onload = function() {
+            const consent = localStorage.getItem('consent');
+            if (!consent) {
+                document.getElementById('consent-message').style.display = 'block';
+            } else {
+                initializeAds();
+            }
+        };
+    </script>
+
+    <!-- Calculator Logic -->
+    <script>
+        // Function to append value to the display
+        function appendToDisplay(value) {
+            const display = document.getElementById('display');
+            display.value += value;
+        }
+
+        // Function to clear the display
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        // Function to delete the last character
+        function deleteLast() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
+        }
+
+        // Function to calculate the result (safer alternative to eval)
+        function calculateResult() {
+            const display = document.getElementById('display');
+            try {
+                display.value = new Function('return ' + display.value)();
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
